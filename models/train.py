@@ -1,7 +1,7 @@
 import torch
 import pyspiel
-from Go_Engine_v2.models.model import Model
-from Go_Engine_v2.models.utils import state_to_tensor
+from models.model import Model
+from models.utils import state_to_tensor
 import torch.nn.functional as F
 
 import time
