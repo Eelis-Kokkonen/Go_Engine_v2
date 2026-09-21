@@ -54,7 +54,7 @@ class Trainer:
 
         action_log_prob = torch.log(probabilities[0, action] + 1e-8)
 
-        return (observation, action, action_log_prob)
+        return (observation, action, action_log_prob, mask)
 
 
 
@@ -70,13 +70,14 @@ class Trainer:
 
         while not state.is_terminal():
 
-            observation, action, action_log_prob = self.chose_move(state)
+            observation, action, action_log_prob, mask = self.chose_move(state)
 
             game_data.append({
                 "observation": observation.detach(),
                 "action": action,
                 "log_prob": action_log_prob,
-                "player": state.current_player()
+                "player": state.current_player(),
+                "mask": mask
             })
 
             state.apply_action(action)
@@ -111,8 +112,20 @@ class Trainer:
             device=self.device
         ).squeeze()
 
+        mask = torch.tensor(
+            [sample["mask"] for sample in game_data],
+            dtype=torch.long,
+            device=self.device
+        )
+
+
 
         policy_logits, values = self.model(observations)
+
+
+        masked_logits = policy_logits + mask
+
+
 
         values = values.squeeze(-1)
 
