@@ -1,6 +1,7 @@
 import torch
 import pyspiel
-from models.model import Model
+#from models.model import Model
+from models.trm import TinyRecurrentModel as Model
 from models.utils import state_to_tensor
 import torch.nn.functional as F
 
@@ -24,7 +25,7 @@ class Trainer:
         print(f"Using device {self.device}")
 
         self.model = self.model.to(self.device)
-        self.model = torch.compile(self.model)
+        #self.model = torch.compile(self.model)
 
         self.loss_fn = torch.nn.MSELoss()
 

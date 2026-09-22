@@ -25,7 +25,7 @@ class TRM(nn.Module):
         return y, z
 
 class TinyRecurrentModel(nn.Module):
-    def __init__(self, dim, board_size=19):
+    def __init__(self, dim=128, board_size=19):
         super().__init__()
 
         self.dim = dim
@@ -55,8 +55,8 @@ class TinyRecurrentModel(nn.Module):
 
         x_embedding = self.input_proj(x)
 
-        y = torch.zeros(batch_size, self.dim, self.board_size, self.board_size, device=x.device)
-        z = torch.zeros(batch_size, self.dim, self.board_size, self.board_size, device=x.device)
+        y = torch.zeros_like(x_embedding, device=x.device)
+        z = torch.zeros_like(x_embedding, device=x.device)
 
         for step in range(self.num_recurrent):
             if step < self.num_recurrent - 1:
