@@ -38,7 +38,9 @@ class Trainer:
 
         observation = state_to_tensor(state, self.device)
 
-        policy_logits, value = self.model(observation)
+        with torch.no_grad():   
+
+            policy_logits, value = self.model(observation)
 
         legal_moves = state.legal_actions()
 
