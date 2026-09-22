@@ -33,7 +33,7 @@ class Trainer:
 
         self.optimizer = torch.optim.AdamW(
             params=self.model.parameters(),
-            lr=1e-4
+            lr=5e-5
         )
 
     @torch.no_grad()
@@ -41,7 +41,6 @@ class Trainer:
 
 
         observations = []
-        legal_actions = []
         masks = []
 
         for env in envs:
@@ -57,7 +56,6 @@ class Trainer:
                 mask[action] = 0
 
             observations.append(observation)
-            legal_actions.append(action)
             masks.append(mask)
 
         observation = torch.cat(observations, dim=0)
@@ -79,7 +77,7 @@ class Trainer:
         return (observation, action.cpu(), masks)
 
 
-    def collect_data(self, num_envs=2, num_games=20):
+    def collect_data(self, num_envs=5, num_games=5):
 
         envs = [GoEnv() for _ in range(num_envs)]
 
@@ -112,8 +110,6 @@ class Trainer:
                         step["returns"] = returns[step["player"]]
 
                     experiences.extend(trajectories[env_idx])
-
-                    trajectories[env_idx] = []
 
                     completed_games += 1
 
@@ -199,7 +195,7 @@ class Trainer:
 
         return loss.item(), policy_loss.item(), value_loss.item()
 
-    def train(self, num_games=1_000, num_envs=2):
+    def train(self, num_games=1_000, num_envs=5):
 
         print("Training has started...")
 
