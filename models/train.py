@@ -119,6 +119,23 @@ class Trainer:
 
         values = values.squeeze(-1)
 
+        print(
+            f"targets: mean={targets.mean().item():.3f}, "
+            f"winrate={(targets > 0).float().mean().item():.3f} | "
+            f"values: mean={values.mean().item():.3f}, "
+            f"min={values.min().item():.3f}, "
+            f"max={values.max().item():.3f}"
+        )
+
+        print(
+            "target/value:",
+            list(zip(
+                targets[:10].detach().cpu().tolist(),
+                values[:10].detach().cpu().tolist()
+            ))
+        )
+
+        
         value_loss = F.mse_loss(
             values,
             targets
