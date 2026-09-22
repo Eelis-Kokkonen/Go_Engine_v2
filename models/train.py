@@ -25,7 +25,7 @@ class Trainer:
         print(f"Using device {self.device}")
 
         self.model = self.model.to(self.device)
-        #self.model = torch.compile(self.model)
+        self.model = torch.compile(self.model)
 
         self.loss_fn = torch.nn.MSELoss()
 
@@ -135,7 +135,7 @@ class Trainer:
             ))
         )
 
-        
+
         value_loss = F.mse_loss(
             values,
             targets
