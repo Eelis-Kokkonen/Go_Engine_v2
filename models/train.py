@@ -76,10 +76,10 @@ class Trainer:
 
         action = torch.multinomial(probabilities, num_samples=1).squeeze(1)
 
-        return (observation, action.cpu(), mask)
+        return (observation, action.cpu(), masks)
 
 
-    def collect_data(self, num_envs=16, num_games=20):
+    def collect_data(self, num_envs=2, num_games=20):
 
         envs = [GoEnv() for _ in range(num_envs)]
 
@@ -117,17 +117,17 @@ class Trainer:
 
                     completed_games += 1
 
-                trajectories[env_idx] = []
+                    trajectories[env_idx] = []
 
-                if num_games >= completed_games:
-                    env.reset()
+                    if num_games > completed_games:
+                        env.reset()
 
 
         return experiences
 
     def train_batch(self, samples):
 
-        observations = torch.cat([
+        observations = torch.stack([
             sample["observation"]
             for sample in samples
         ], dim=0).to(self.device, non_blocking=True)
@@ -199,20 +199,19 @@ class Trainer:
 
         return loss.item(), policy_loss.item(), value_loss.item()
 
-    def train(self, num_games=1_000, num_envs=16):
+    def train(self, num_games=1_000, num_envs=2):
 
         print("Training has started...")
 
         for game_number in range(num_games):
 
-            game_data, returns = self.collect_data(num_envs=num_envs)
+            game_data = self.collect_data(num_envs=num_envs)
 
-            loss, policy_loss, value_loss = self.train_batch(game_data, returns)
+            loss, policy_loss, value_loss = self.train_batch(game_data)
 
             print(
                 f"Game {game_number + 1}/{num_games} | "
                 f"Moves: {len(game_data)} | "
-                f"Result: {returns} | "
                 f"Loss: {loss:.4f} | "
                 f"Policy: {policy_loss:.4f} | "
                 f"Value: {value_loss:.4f} | "
