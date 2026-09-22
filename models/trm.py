@@ -10,7 +10,7 @@ class TRM(nn.Module):
         self.net = nn.Sequential(
             nn.Conv2d(in_channels=dim, out_channels=dim, kernel_size=3, padding=1),
             #nn.BatchNorm2d(dim),
-            nn.GroupNorm(num_groups=19, num_channels=dim),
+            nn.GroupNorm(num_groups=8, num_channels=dim),
             nn.SiLU(),
             nn.Conv2d(in_channels=dim, out_channels=dim, kernel_size=3, padding=1),
         )
