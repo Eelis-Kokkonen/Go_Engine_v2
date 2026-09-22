@@ -25,7 +25,7 @@ class Trainer:
         print(f"Using device {self.device}")
 
         self.model = self.model.to(self.device)
-        self.model = torch.compile(self.model)
+        #self.model = torch.compile(self.model)
 
         self.loss_fn = torch.nn.MSELoss()
 
@@ -113,10 +113,9 @@ class Trainer:
             device=self.device
         ).squeeze()
 
-        mask = torch.tensor(
-            [sample["mask"] for sample in game_data],
-            device=self.device
-        )
+        mask = torch.stack(
+            [sample["mask"] for sample in game_data]
+        ).to(self.device)
 
         policy_logits, values = self.model(observations)
 
