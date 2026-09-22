@@ -26,7 +26,7 @@ class TRM(nn.Module):
         return y, z
 
 class TinyRecurrentModel(nn.Module):
-    def __init__(self, dim=361, board_size=19):
+    def __init__(self, dim=64, board_size=19):
         super().__init__()
 
         self.dim = dim
