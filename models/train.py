@@ -55,12 +55,7 @@ class Trainer:
 
         action = torch.multinomial(probabilities, 1).item()
 
-        action_log_prob = torch.log(probabilities[0, action] + 1e-8)
-
-        return (observation, action, action_log_prob, mask)
-
-
-
+        return (observation, action, mask)
 
     def play_game(self):
 
@@ -73,12 +68,11 @@ class Trainer:
 
         while not state.is_terminal():
 
-            observation, action, action_log_prob, mask = self.chose_move(state)
+            observation, action, mask = self.chose_move(state)
 
             game_data.append({
                 "observation": observation.detach(),
                 "action": action,
-                "log_prob": action_log_prob,
                 "player": state.current_player(),
                 "mask": mask
             })
@@ -143,8 +137,10 @@ class Trainer:
             actions
         ]
 
+        advantages = targets - values.detach()
+
         policy_loss = -(
-            chosen_log_probs * targets
+            chosen_log_probs * advantages
         ).mean()
 
         loss = policy_loss + value_loss
