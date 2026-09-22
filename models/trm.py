@@ -71,6 +71,8 @@ class TinyRecurrentModel(nn.Module):
         out = self.output_proj(y)
 
         policy = self.policy_head(out)
-        value = self.prob(self.prob_output(out))
+        #value = self.prob(self.prob_output(out))
+        value = self.prob_output(out)
+
 
         return policy, value
