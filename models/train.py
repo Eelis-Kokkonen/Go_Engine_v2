@@ -25,7 +25,7 @@ class Trainer:
         print(f"Using device {self.device}")
 
         self.model = self.model.to(self.device)
-        #self.model = torch.compile(self.model)
+        self.model = torch.compile(self.model)
 
         self.loss_fn = torch.nn.MSELoss()
 
@@ -115,18 +115,12 @@ class Trainer:
 
         mask = torch.tensor(
             [sample["mask"] for sample in game_data],
-            dtype=torch.long,
             device=self.device
         )
 
-
-
         policy_logits, values = self.model(observations)
 
-
         masked_logits = policy_logits + mask
-
-
 
         values = values.squeeze(-1)
 
@@ -136,7 +130,7 @@ class Trainer:
         )
 
         log_probs = F.log_softmax(
-            policy_logits,
+            masked_logits,
             dim=-1
         )
 
